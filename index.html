@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZAMARA COFE</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #1a120f;
+        color: #f3e9e1;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      /* ANIMATSIYALI LOGIN MODAL */
+      .login-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 7, 6, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 2000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        transition:
+          opacity 0.5s ease,
+          visibility 0.5s ease;
+      }
+
+      .login-overlay.hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .login-box {
+        background: linear-gradient(145deg, #281c18, #1e1411);
+        border: 1px solid rgba(212, 163, 115, 0.25);
+        padding: 40px 32px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow:
+          0 15px 35px rgba(0, 0, 0, 0.8),
+          0 0 30px rgba(212, 163, 115, 0.15);
+        text-align: center;
+        transform: scale(1);
+        animation: modalAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.27)
+          forwards;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Animatsiyali fonga nur effekti */
+      .login-box::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(212, 163, 115, 0.08) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+        animation: pulseGlow 6s infinite alternate ease-in-out;
+      }
+
+      @keyframes modalAppear {
+        0% {
+          opacity: 0;
+          transform: scale(0.7) translateY(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      @keyframes pulseGlow {
+        0% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1.1);
+        }
+      }
+
+      /* Shake / Silkinish animatsiyasi xatolik uchun */
+      .login-box.shake {
+        animation: shakeAnim 0.4s ease-in-out;
+      }
+
+      @keyframes shakeAnim {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-10px);
+        }
+        40%,
+        80% {
+          transform: translateX(10px);
+        }
+      }
+
+      .login-box h2 {
+        font-size: 28px;
+        color: #fff;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+      }
+
+      .login-box p {
+        font-size: 14px;
+        color: #a08a7e;
+        margin-bottom: 28px;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+        position: relative;
+      }
+
+      .input-group label {
+        display: block;
+        font-size: 13px;
+        color: #d4b59d;
+        margin-bottom: 8px;
+        transition: color 0.3s ease;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 14px 16px;
+        background-color: #140d0b;
+        border: 1px solid #3d2b25;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      .input-group input:focus {
+        border-color: #d4a373;
+        box-shadow: 0 0 12px rgba(212, 163, 115, 0.3);
+        transform: translateY(-2px);
+        background-color: #1a120f;
+      }
+
+      .input-group input:focus + label {
+        color: #d4a373;
+      }
+
+      .login-submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #d4a373, #bc8a5f);
+        color: #1a120f;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(212, 163, 115, 0.25);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-submit-btn:hover {
+        background: linear-gradient(135deg, #faedcd, #d4a373);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 163, 115, 0.4);
+      }
+
+      .login-submit-btn:active {
+        transform: translateY(0);
+      }
+
+      /* HEADER & MAIN CONTENT */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #2b1e1a;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #3d2b25;
+      }
+
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo-area h1 {
+        font-size: 24px;
+        color: #fff;
+      }
+
+      .status-tag {
+        background-color: #2e4a28;
+        color: #8be380;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+      }
+
+      .user-info-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-email {
+        font-size: 14px;
+        color: #d4b59d;
+      }
+
+      .cart-btn {
+        background-color: #d4a373;
+        color: #1a120f;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+
+      .cart-btn:hover {
+        background-color: #faedcd;
+      }
+
+      /* Kategoriya filterlari */
+      .filter-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+
+      .filter-btn {
+        background-color: #281c18;
+        color: #d4b59d;
+        border: 1px solid #3d2b25;
+        padding: 8px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+
+      .filter-btn.active,
+      .filter-btn:hover {
+        background-color: #d4a373;
+        color: #1a120f;
+        border-color: #d4a373;
+        font-weight: bold;
+      }
+
+      /* Menu Grid */
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background-color: #281c18;
+        border: 1px solid #3d2b25;
+        border-radius: 16px;
+        padding: 15px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.2s;
+        overflow: hidden;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+      }
+
+      .card-img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+
+      .card h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+        color: #fff;
+      }
+
+      .card .desc {
+        font-size: 12px;
+        color: #a08a7e;
+        margin-bottom: 10px;
+        min-height: 32px;
+      }
+
+      .card .size {
+        font-size: 12px;
+        color: #d4b59d;
+        margin-bottom: 12px;
+        background: #1a120f;
+        padding: 3px 8px;
+        border-radius: 10px;
+      }
+
+      .card .price {
+        font-size: 17px;
+        font-weight: bold;
+        color: #d4a373;
+        margin-bottom: 15px;
+      }
+
+      .add-btn {
+        background-color: #3d2b25;
+        color: #fff;
+        border: 1px solid #5a4038;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.2s;
+      }
+
+      .add-btn:hover {
+        background-color: #d4a373;
+        color: #1a120f;
+      }
+
+      /* Sidebar Savat */
+      .cart-sidebar {
+        position: fixed;
+        top: 0;
+        right: -380px;
+        width: 350px;
+        height: 100%;
+        background-color: #231815;
+        border-left: 1px solid #3d2b25;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        transition: right 0.3s ease;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        z-index: 900;
+      }
+
+      .cart-sidebar.open {
+        right: 0;
+      }
+
+      .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #3d2b25;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+      }
+
+      .cart-items {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #33221d;
+      }
+
+      .cart-footer {
+        border-top: 1px solid #3d2b25;
+        padding-top: 15px;
+      }
+
+      .payment-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .pay-btn-option {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .payme-btn {
+        background-color: #00cccc;
+        color: #000;
+      }
+      .click-btn {
+        background-color: #007bf5;
+        color: #fff;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: #2b1e1a;
+        padding: 25px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 380px;
+        position: relative;
+        border: 1px solid #5a4038;
+        text-align: center;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+      }
+
+      .card-box {
+        background: #1a120f;
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px dashed #d4a373;
+        margin: 15px 0;
+      }
+
+      .card-number {
+        font-size: 20px;
+        font-weight: bold;
+        color: #d4a373;
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+
+      .card-owner {
+        font-size: 13px;
+        color: #a08a7e;
+        text-transform: uppercase;
+      }
+
+      .submit-pay-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: #d4a373;
+        color: #1a120f;
+        font-weight: bold;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ANIMATSIYALI LOGIN MODAL -->
+    <div id="loginOverlay" class="login-overlay">
+      <div class="login-box" id="loginBox">
+        <h2>ZAMARA COFE</h2>
+        <p>Hush kelibsiz! Tizimga kiring</p>
+
+        <form onsubmit="handleLogin(event)">
+          <div class="input-group">
+            <label for="emailInput">Email manzilingiz</label>
+            <input
+              type="email"
+              id="emailInput"
+              placeholder="masalan: muxriddin@mail.com"
+              required
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="passwordInput">Parolingiz</label>
+            <input
+              type="password"
+              id="passwordInput"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button type="submit" class="login-submit-btn">Saytga kirish</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="logo-area">
+        <h1>ZAMARA COFE</h1>
+        <span class="status-tag">● Hozir ochiq, 04:00 gacha</span>
+      </div>
+      <div class="user-info-area">
+        <span id="userDisplayEmail" class="user-email"></span>
+        <button class="cart-btn" onclick="toggleCart()">
+          Savatcha (<span id="cartCount">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <!-- Kategoriya Filterlari -->
+    <div class="filter-container">
+      <button class="filter-btn active" onclick="filterMenu('all', event)">
+        Barchasi
+      </button>
+      <button class="filter-btn" onclick="filterMenu('hot', event)">
+        Issiq kofelar
+      </button>
+      <button class="filter-btn" onclick="filterMenu('ice', event)">
+        Muzli kofelar
+      </button>
+      <button class="filter-btn" onclick="filterMenu('special', event)">
+        Mualliflik / Maxsus
+      </button>
+    </div>
+
+    <!-- Menyu Grid -->
+    <main class="menu-grid" id="menuGrid">
+      <!-- Kofe kartochkalari JS orqali avtomatik yuklanadi -->
+    </main>
+
+    <!-- Savat paneli -->
+    <div id="cartSidebar" class="cart-sidebar">
+      <div class="cart-header">
+        <h2>Savatcha</h2>
+        <span style="cursor: pointer" onclick="toggleCart()">✕</span>
+      </div>
+      <div id="cartItems" class="cart-items">
+        <p style="color: #aaa; text-align: center; margin-top: 20px">
+          Savatcha bo'sh.
+        </p>
+      </div>
+      <div class="cart-footer">
+        <div style="font-size: 18px">
+          Jami: <strong id="totalPrice" style="color: #d4a373">0 so'm</strong>
+        </div>
+        <div class="payment-buttons">
+          <button
+            class="pay-btn-option payme-btn"
+            onclick="openCardModal('Payme')"
+          >
+            Payme orqali to'lash
+          </button>
+          <button
+            class="pay-btn-option click-btn"
+            onclick="openCardModal('Click')"
+          >
+            Click orqali to'lash
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Karta to'lov Modali -->
+    <div id="cardModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeCardModal()">&times;</span>
+        <h3 id="modalTitle" style="color: #fff">To'lov</h3>
+
+        <p style="margin-top: 10px; font-size: 14px; color: #d4b59d">
+          To'lovni amalga oshirish uchun quyidagi kartaga pul o'tkazing va
+          tasdiqlang:
+        </p>
+
+        <div class="card-box">
+          <div class="card-number" id="displayCardNumber">
+            9860 1001 2630 5299
+          </div>
+          <div class="card-owner" id="displayCardOwner">Karta egasi ismi</div>
+        </div>
+
+        <div style="font-size: 15px; margin-bottom: 15px">
+          To'lanadigan summa:
+          <strong id="modalTotalPrice" style="color: #d4a373">0 so'm</strong>
+        </div>
+
+        <button type="button" class="submit-pay-btn" onclick="confirmPayment()">
+          To'lovni amalga oshirdim
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const MY_CARD_NUMBER = "9860 1001 2630 5299";
+      const MY_CARD_OWNER = "MUXRIDDIN N.";
+
+      // Animatsiyali Kirish funksiyasi
+      function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById("emailInput").value;
+        const pass = document.getElementById("passwordInput").value;
+        const loginBox = document.getElementById("loginBox");
+        const loginOverlay = document.getElementById("loginOverlay");
+
+        if (email && pass) {
+          document.getElementById("userDisplayEmail").innerText = email;
+
+          // Yo'qolish animatsiyasi
+          loginOverlay.classList.add("hide");
+        } else {
+          // Silkinish animatsiyasini ishga tushirish (xatolik)
+          loginBox.classList.add("shake");
+          setTimeout(() => {
+            loginBox.classList.remove("shake");
+          }, 400);
+        }
+      }
+
+      const coffeeList = [
+        {
+          id: 1,
+          name: "Espresso",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=400&q=80",
+          desc: "Kuchli va to'yingan klassik espresso shot",
+          size: "30 ml",
+          price: 18000,
+        },
+        {
+          id: 2,
+          name: "Amerikano",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1551030173-122aabc4489c?auto=format&fit=crop&w=400&q=80",
+          desc: "Espresso va issiq suv aralashmasi",
+          size: "250 ml",
+          price: 20000,
+        },
+        {
+          id: 3,
+          name: "Kapuchino",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=400&q=80",
+          desc: "Espresso, issiq sut va ko'pikli sut qatlami",
+          size: "200 ml",
+          price: 25000,
+        },
+        {
+          id: 4,
+          name: "Latte",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=400&q=80",
+          desc: "Yumshoq sutli kofe va nafis ko'pik",
+          size: "300 ml",
+          price: 27000,
+        },
+        {
+          id: 5,
+          name: "Flat White",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=400&q=80",
+          desc: "Ikkitalik espresso va mayin sutli ko'pik",
+          size: "180 ml",
+          price: 28000,
+        },
+        {
+          id: 6,
+          name: "Mokka",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?auto=format&fit=crop&w=400&q=80",
+          desc: "Espresso, issiq shokolad va sut aralashmasi",
+          size: "300 ml",
+          price: 30000,
+        },
+        {
+          id: 7,
+          name: "Karamelli Latte",
+          category: "special",
+          img: "https://images.unsplash.com/photo-1599398054066-846f28917f38?auto=format&fit=crop&w=400&q=80",
+          desc: "Karamel siropi va sut bilan tayyorlangan latte",
+          size: "300 ml",
+          price: 32000,
+        },
+        {
+          id: 8,
+          name: "Vanilli Latte",
+          category: "special",
+          img: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=400&q=80",
+          desc: "Tabiiy vanil xushbo'yligi ulashuvchi kofe",
+          size: "300 ml",
+          price: 31000,
+        },
+        {
+          id: 9,
+          name: "Raf Kofe",
+          category: "special",
+          img: "https://images.unsplash.com/photo-1585494156145-1c60a4fe952b?auto=format&fit=crop&w=400&q=80",
+          desc: "Espresso, qaymoq va vanil shakarli mayin kofe",
+          size: "300 ml",
+          price: 33000,
+        },
+        {
+          id: 10,
+          name: "Turk Kofesi",
+          category: "hot",
+          img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400&q=80",
+          desc: "Jezvada qum ustida tayyorlangan an'anaviy kofe",
+          size: "90 ml",
+          price: 22000,
+        },
+        {
+          id: 11,
+          name: "Ice Latte",
+          category: "ice",
+          img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=400&q=80",
+          desc: "Muz parchasi, muzdek sut va espresso",
+          size: "400 ml",
+          price: 29000,
+        },
+        {
+          id: 12,
+          name: "Ice Amerikano",
+          category: "ice",
+          img: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=400&q=80",
+          desc: "Muz va salqin suv qo'shilgan klassik espresso",
+          size: "350 ml",
+          price: 22000,
+        },
+        {
+          id: 13,
+          name: "Frapuchino",
+          category: "ice",
+          img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=400&q=80",
+          desc: "Muzli kofe, sut, karamel va ko'pirtirilgan qaymoq",
+          size: "400 ml",
+          price: 35000,
+        },
+        {
+          id: 14,
+          name: "Bumble Coffee",
+          category: "ice",
+          img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=400&q=80",
+          desc: "Espresso va apelsin sharbati qatlami",
+          size: "350 ml",
+          price: 34000,
+        },
+        {
+          id: 15,
+          name: "Glyasse",
+          category: "special",
+          img: "https://images.unsplash.com/photo-1568649929103-28ffbefaca1e?auto=format&fit=crop&w=400&q=80",
+          desc: "Klassik kofe va ustiga vanil muzqaymog'i",
+          size: "250 ml",
+          price: 30000,
+        },
+      ];
+
+      let cart = [];
+
+      function renderMenu(items) {
+        const menuGrid = document.getElementById("menuGrid");
+        menuGrid.innerHTML = "";
+
+        items.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" class="card-img" loading="lazy">
+          <h3>${item.name}</h3>
+          <div class="desc">${item.desc}</div>
+          <div class="size">${item.size}</div>
+          <div class="price">${item.price.toLocaleString()} so'm</div>
+          <button class="add-btn" onclick="addToCart('${item.name}', ${item.price})">Savatga</button>
+        `;
+          menuGrid.appendChild(card);
+        });
+      }
+
+      function filterMenu(category, e) {
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        e.target.classList.add("active");
+
+        if (category === "all") {
+          renderMenu(coffeeList);
+        } else {
+          const filtered = coffeeList.filter(
+            (item) => item.category === category,
+          );
+          renderMenu(filtered);
+        }
+      }
+
+      function addToCart(title, price) {
+        cart.push({ title, price });
+        updateCartUI();
+      }
+
+      function updateCartUI() {
+        document.getElementById("cartCount").innerText = cart.length;
+        const cartItemsDiv = document.getElementById("cartItems");
+
+        if (cart.length === 0) {
+          cartItemsDiv.innerHTML =
+            '<p style="color: #aaa; text-align:center; margin-top:20px;">Savatcha bo\'sh.</p>';
+          document.getElementById("totalPrice").innerText = "0 so'm";
+        } else {
+          cartItemsDiv.innerHTML = "";
+          let total = 0;
+          cart.forEach((item) => {
+            total += item.price;
+            const itemElement = document.createElement("div");
+            itemElement.className = "cart-item";
+            itemElement.innerHTML = `
+            <span>${item.title}</span>
+            <span>${item.price.toLocaleString()} so'm</span>
+          `;
+            cartItemsDiv.appendChild(itemElement);
+          });
+          document.getElementById("totalPrice").innerText =
+            total.toLocaleString() + " so'm";
+        }
+      }
+
+      function toggleCart() {
+        document.getElementById("cartSidebar").classList.toggle("open");
+      }
+
+      function openCardModal(provider) {
+        if (cart.length === 0) {
+          alert("Savat bo'sh! Oldin kofe tanlang.");
+          return;
+        }
+
+        let total = cart.reduce((sum, item) => sum + item.price, 0);
+
+        document.getElementById("modalTitle").innerText =
+          provider + " orqali to'lov";
+        document.getElementById("displayCardNumber").innerText = MY_CARD_NUMBER;
+        document.getElementById("displayCardOwner").innerText = MY_CARD_OWNER;
+        document.getElementById("modalTotalPrice").innerText =
+          total.toLocaleString() + " so'm";
+
+        document.getElementById("cardModal").style.display = "flex";
+      }
+
+      function closeCardModal() {
+        document.getElementById("cardModal").style.display = "none";
+      }
+
+      function confirmPayment() {
+        alert(
+          "Rahmat! To'lovingiz qabul qilindi. Buyurtmangiz tayyorlanmoqda.",
+        );
+        cart = [];
+        updateCartUI();
+        closeCardModal();
+        toggleCart();
+      }
+
+      renderMenu(coffeeList);
+    </script>
+  </body>
+</html>
